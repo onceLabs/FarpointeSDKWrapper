@@ -1,0 +1,515 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.8 (swiftlang-5.8.0.124.2 clang-1403.0.22.11.100)
+// swift-module-flags: -target arm64-apple-ios16.4-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name FarpointeFramework
+// swift-module-flags-ignorable: -enable-bare-slash-regex
+import Combine
+import Combine/*.Combine*/
+import CoreData
+import CoreFoundation
+import CoreLocation
+@_exported import FarpointeFramework
+import Foundation
+import LegicMobileSdk
+import Swift
+import SwiftUI
+import UIKit
+import _Concurrency
+import _StringProcessing
+@propertyWrapper public struct Injected<T> {
+  public init(_ keyPath: Swift.KeyPath<FarpointeFramework.Container, FarpointeFramework.Factory<T>>)
+  public init<C>(_ keyPath: Swift.KeyPath<C, FarpointeFramework.Factory<T>>) where C : FarpointeFramework.SharedContainer
+  public var wrappedValue: T {
+    get
+    set
+  }
+  public var projectedValue: FarpointeFramework.Injected<T> {
+    get
+    set
+  }
+  public var factory: FarpointeFramework.Factory<T> {
+    get
+  }
+  public mutating func resolve(reset options: FarpointeFramework.FactoryResetOptions = .none)
+}
+@propertyWrapper public struct LazyInjected<T> {
+  public init(_ keyPath: Swift.KeyPath<FarpointeFramework.Container, FarpointeFramework.Factory<T>>)
+  public init<C>(_ keyPath: Swift.KeyPath<C, FarpointeFramework.Factory<T>>) where C : FarpointeFramework.SharedContainer
+  public var wrappedValue: T {
+    mutating get
+    set
+  }
+  public var projectedValue: FarpointeFramework.LazyInjected<T> {
+    get
+    set
+  }
+  public var factory: FarpointeFramework.Factory<T> {
+    get
+  }
+  public mutating func resolve(reset options: FarpointeFramework.FactoryResetOptions = .none)
+  public func resolvedOrNil() -> T?
+}
+@propertyWrapper public struct WeakLazyInjected<T> {
+  public init(_ keyPath: Swift.KeyPath<FarpointeFramework.Container, FarpointeFramework.Factory<T>>)
+  public init<C>(_ keyPath: Swift.KeyPath<C, FarpointeFramework.Factory<T>>) where C : FarpointeFramework.SharedContainer
+  public var wrappedValue: T? {
+    mutating get
+    set
+  }
+  public var projectedValue: FarpointeFramework.WeakLazyInjected<T> {
+    get
+    set
+  }
+  public var factory: FarpointeFramework.Factory<T> {
+    get
+  }
+  public mutating func resolve(reset options: FarpointeFramework.FactoryResetOptions = .none)
+  public func resolvedOrNil() -> T?
+}
+@propertyWrapper public struct InjectedType<T> {
+  public init()
+  public init(_ container: any FarpointeFramework.ManagedContainer)
+  public var wrappedValue: T? {
+    get
+    set
+  }
+}
+@available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
+@frozen @propertyWrapper @_Concurrency.MainActor(unsafe) public struct InjectedObject<T> : SwiftUI.DynamicProperty where T : Combine.ObservableObject {
+  @_Concurrency.MainActor(unsafe) private var _dependency: SwiftUI.StateObject<T>
+  @_Concurrency.MainActor(unsafe) public init(_ keyPath: Swift.KeyPath<FarpointeFramework.Container, FarpointeFramework.Factory<T>>)
+  @_Concurrency.MainActor(unsafe) public init<C>(_ keyPath: Swift.KeyPath<C, FarpointeFramework.Factory<T>>) where C : FarpointeFramework.SharedContainer
+  @_Concurrency.MainActor(unsafe) public var wrappedValue: T {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public var projectedValue: SwiftUI.ObservedObject<T>.Wrapper {
+    get
+  }
+}
+@available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
+extension FarpointeFramework.InjectedObject {
+  @_Concurrency.MainActor(unsafe) public init(_ wrappedValue: T)
+}
+public enum FactoryContextType : Swift.Equatable {
+  case arg(Swift.String)
+  case args([Swift.String])
+  case preview
+  case test
+  case debug
+  case simulator
+  case device
+  public static func == (a: FarpointeFramework.FactoryContextType, b: FarpointeFramework.FactoryContextType) -> Swift.Bool
+}
+public struct FactoryContext {
+  public var arguments: [Swift.String]
+  public var runtimeArguments: [Swift.String : Swift.String]
+  public var isPreview: Swift.Bool
+  public var isTest: Swift.Bool
+  public var isSimulator: Swift.Bool
+  public var isDebug: Swift.Bool
+}
+extension FarpointeFramework.FactoryContext {
+  public static var current: FarpointeFramework.FactoryContext
+}
+extension FarpointeFramework.FactoryContext {
+  public static func setArg(_ arg: Swift.String, forKey key: Swift.String)
+  public static func removeArg(forKey key: Swift.String)
+}
+public protocol Resolving : FarpointeFramework.ManagedContainer {
+  func register<T>(_ type: T.Type, factory: @escaping () -> T) -> FarpointeFramework.Factory<T>
+  func factory<T>(_ type: T.Type) -> FarpointeFramework.Factory<T>?
+  func resolve<T>(_ type: T.Type) -> T?
+}
+extension FarpointeFramework.Resolving {
+  @discardableResult
+  public func register<T>(_ type: T.Type = T.self, factory: @escaping () -> T) -> FarpointeFramework.Factory<T>
+  public func factory<T>(_ type: T.Type = T.self) -> FarpointeFramework.Factory<T>?
+  public func resolve<T>(_ type: T.Type = T.self) -> T?
+}
+public struct Beacon {
+  public let id: Swift.String
+  public let major: Swift.String
+  public let minor: Swift.String
+  public let proximity: CoreLocation.CLProximity
+  public let rssi: Swift.Int
+  public let accuracy: Swift.Double
+}
+public struct FarpointeConfiguration {
+  public let appId: Swift.UInt
+  public let username: Swift.String
+  public let password: Swift.String
+  public let serverUrl: Swift.String
+  public init(appId: Swift.UInt, username: Swift.String, password: Swift.String, serverUrl: Swift.String)
+}
+public protocol FarpointeSdkProviding {
+  static var shared: any FarpointeFramework.FarpointeSdkProviding { get }
+  var accessCards: Combine.Published<[FarpointeFramework.FarpointeAccessCard]>.Publisher { get }
+  static func setup(configuration: FarpointeFramework.FarpointeConfiguration) -> Swift.Result<Swift.Void, FarpointeFramework.FarpointeError>
+  #if compiler(>=5.3) && $AsyncAwait
+  func registerAccessCard(registrationKey: Swift.String) async -> Swift.Result<Swift.Void, FarpointeFramework.FarpointeError>
+  #endif
+  #if compiler(>=5.3) && $AsyncAwait
+  func unregisterAccessCard(registrationKey: Swift.String) async -> Swift.Result<Swift.Void, FarpointeFramework.FarpointeError>
+  #endif
+  #if compiler(>=5.3) && $AsyncAwait
+  func activateAccessCard(registrationKey: Swift.String, timeout: FarpointeFramework.ActivationTime) async -> Swift.Result<Swift.Void, FarpointeFramework.FarpointeError>
+  #endif
+  func deactivateAccessCard(registrationKey: Swift.String) -> Swift.Result<Swift.Void, FarpointeFramework.FarpointeError>
+  func enableReaderDetection(for readerUuid: Foundation.UUID, delegate: (any FarpointeFramework.ReaderDetectorDelegate)?) -> Swift.Result<Swift.Void, FarpointeFramework.FarpointeError>
+  func disableReaderDetection(config: FarpointeFramework.DisableReaderConfiguration) -> Swift.Result<Swift.Void, FarpointeFramework.FarpointeError>
+  #if compiler(>=5.3) && $AsyncAwait
+  func registerDevice(email: Swift.String) async -> Swift.Result<Swift.Void, FarpointeFramework.FarpointeError>
+  #endif
+  #if compiler(>=5.3) && $AsyncAwait
+  func registerDevice(phoneNumber: Swift.String) async -> Swift.Result<Swift.Void, FarpointeFramework.FarpointeError>
+  #endif
+  #if compiler(>=5.3) && $AsyncAwait
+  func confirmDeviceRegistration(confirmationToken: Swift.String) async -> Swift.Result<Swift.Void, FarpointeFramework.FarpointeError>
+  #endif
+  #if compiler(>=5.3) && $AsyncAwait
+  func unregisterDevice() async -> Swift.Result<Swift.Void, FarpointeFramework.FarpointeError>
+  #endif
+  func isDeviceRegistered() -> Swift.Bool
+}
+public struct FarpointeAccessCard {
+  public let lastUpdated: Foundation.Date?
+  public let registeredDate: Foundation.Date?
+  public let registrationKey: Swift.String?
+  public let usageNumber: Swift.Int32
+}
+public enum FarpointeError : Swift.Error, Swift.CustomStringConvertible {
+  case placeholderError(message: Swift.String)
+  case unknown(reason: FarpointeFramework.FarpointeErrorReason)
+  case generalError(reason: FarpointeFramework.FarpointeErrorReason)
+  case registrationFailed(reason: FarpointeFramework.FarpointeErrorReason)
+  case unregisterFailed(reason: FarpointeFramework.FarpointeErrorReason)
+  case requestAddFileFailed(reason: FarpointeFramework.FarpointeErrorReason)
+  case requestRemoveFileFailed(reason: FarpointeFramework.FarpointeErrorReason)
+  case synchronizeFailed(reason: FarpointeFramework.FarpointeErrorReason)
+  case activateFileFailed(reason: FarpointeFramework.FarpointeErrorReason)
+  case deactivateFileFailed(reason: FarpointeFramework.FarpointeErrorReason)
+  case activateRfInterfaceFailed(reason: FarpointeFramework.FarpointeErrorReason)
+  case deactivateRfInterfaceFailed(reason: FarpointeFramework.FarpointeErrorReason)
+  case lcMessageSendFailed(reason: FarpointeFramework.FarpointeErrorReason)
+  case passwordSendFailed(reason: FarpointeFramework.FarpointeErrorReason)
+  case invalidRegistrationKey(reason: FarpointeFramework.FarpointeErrorReason)
+  case noMacRequestFileAvailable(reason: FarpointeFramework.FarpointeErrorReason)
+  case maxWrongAttemptsReached(reason: FarpointeFramework.FarpointeErrorReason)
+  case alreadyExists(reason: FarpointeFramework.FarpointeErrorReason)
+  case cardActivationFailed(reason: FarpointeFramework.FarpointeErrorReason)
+  case cardDeactivationFailed(reason: FarpointeFramework.FarpointeErrorReason)
+  case enableReaderDetectionFailed(reason: FarpointeFramework.FarpointeErrorReason)
+  case disableReaderDetectionFailed(reason: FarpointeFramework.FarpointeErrorReason)
+  case commandFailed(reason: FarpointeFramework.FarpointeErrorReason)
+  public var description: Swift.String {
+    get
+  }
+}
+public enum FarpointeErrorReason : Swift.String {
+  case unknown
+  case generalError
+  case wrongParameter
+  case notStarted
+  case fileNotFound
+  case fileInWrongState
+  case interfaceNotRegistered
+  case backendConfigurationError
+  case backendCommunicationError
+  case sdkNotRegistered
+  case lcMessageQueueFull
+  case passwordQueueFull
+  case alreadyExist
+  case rejectedByBackend
+  case noAccessCardFound
+  case timeOutOccurred
+  case databaseSaveFailure
+  case noUserPreferencesFound
+  case alreadyEnabled
+  case alreadyDisabled
+  case insufficientPermissions
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
+extension LegicMobileSdk.NeonFile {
+  @objc override dynamic open var description: Swift.String {
+    @objc get
+  }
+}
+public enum ActivationTime : Swift.Int, Swift.CaseIterable {
+  case `default`
+  case thirtySeconds
+  case oneMinute
+  case twoMinutes
+  case threeMinutes
+  case fourMinutes
+  case fiveMinutes
+  public var time: Foundation.TimeInterval {
+    get
+  }
+  public var description: Swift.String {
+    get
+  }
+  public init?(rawValue: Swift.Int)
+  public typealias AllCases = [FarpointeFramework.ActivationTime]
+  public typealias RawValue = Swift.Int
+  public static var allCases: [FarpointeFramework.ActivationTime] {
+    get
+  }
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+public struct Factory<T> : FarpointeFramework.FactoryModifying {
+  public init(_ container: any FarpointeFramework.ManagedContainer, key: Swift.String = #function, _ factory: @escaping () -> T)
+  public func callAsFunction() -> T
+  public func resolve() -> T
+  @discardableResult
+  public func register(factory: @escaping () -> T) -> FarpointeFramework.Factory<T>
+  public var registration: FarpointeFramework.FactoryRegistration<Swift.Void, T>
+  public typealias P = Swift.Void
+}
+public struct ParameterFactory<P, T> : FarpointeFramework.FactoryModifying {
+  public init(_ container: any FarpointeFramework.ManagedContainer, key: Swift.String = #function, _ factory: @escaping (P) -> T)
+  public func callAsFunction(_ parameters: P) -> T
+  public func resolve(_ parameters: P) -> T
+  @discardableResult
+  public func register(factory: @escaping (P) -> T) -> FarpointeFramework.ParameterFactory<P, T>
+  public var registration: FarpointeFramework.FactoryRegistration<P, T>
+}
+final public class Container : FarpointeFramework.SharedContainer {
+  public static let shared: FarpointeFramework.Container
+  final public let manager: FarpointeFramework.ContainerManager
+  public init()
+  @objc deinit
+}
+public protocol SharedContainer : FarpointeFramework.ManagedContainer {
+  static var shared: Self { get }
+}
+public protocol ManagedContainer : AnyObject {
+  var manager: FarpointeFramework.ContainerManager { get }
+}
+extension FarpointeFramework.ManagedContainer {
+  @inlinable public func callAsFunction<T>(key: Swift.String = #function, _ factory: @escaping () -> T) -> FarpointeFramework.Factory<T> {
+        Factory(self, key: key, factory)
+    }
+  @inlinable public func callAsFunction<P, T>(key: Swift.String = #function, _ factory: @escaping (P) -> T) -> FarpointeFramework.ParameterFactory<P, T> {
+        ParameterFactory(self, key: key, factory)
+    }
+  public func promised<T>(key: Swift.String = #function) -> FarpointeFramework.Factory<T?>
+  public func promised<P, T>(key: Swift.String = #function) -> FarpointeFramework.ParameterFactory<P, T?>
+  public func decorator(_ decorator: ((Any) -> ())?)
+  @inlinable public func reset(options: FarpointeFramework.FactoryResetOptions = .all) {
+        manager.reset(options: options)
+    }
+  @discardableResult
+  public func with(_ transform: (Self) -> Swift.Void) -> Self
+}
+final public class ContainerManager {
+  public init()
+  final public var defaultScope: FarpointeFramework.Scope?
+  @objc deinit
+}
+extension FarpointeFramework.ContainerManager {
+  final public func reset(options: FarpointeFramework.FactoryResetOptions = .all)
+  final public func reset(scope: FarpointeFramework.Scope)
+  final public func push()
+  final public func pop()
+}
+public protocol AutoRegistering {
+  func autoRegister()
+}
+extension Swift.Result where Success == () {
+  public static var success: Swift.Result<(), Failure> {
+    get
+  }
+}
+extension Swift.Result {
+  public func eraseSuccessValue() -> Swift.Result<Swift.Void, Failure>
+}
+extension Foundation.Date {
+  public func years(from date: Foundation.Date, calendar: Foundation.Calendar = Calendar.current) -> Swift.Int
+  public func months(from date: Foundation.Date, calendar: Foundation.Calendar = Calendar.current) -> Swift.Int
+  public func weeks(from date: Foundation.Date, calendar: Foundation.Calendar = Calendar.current) -> Swift.Int
+  public func days(from date: Foundation.Date, calendar: Foundation.Calendar = Calendar.current) -> Swift.Int
+  public func hours(from date: Foundation.Date, calendar: Foundation.Calendar = Calendar.current) -> Swift.Int
+  public func minutes(from date: Foundation.Date, calendar: Foundation.Calendar = Calendar.current) -> Swift.Int
+  public func seconds(from date: Foundation.Date, calendar: Foundation.Calendar = Calendar.current) -> Swift.Int
+  public func nanoseconds(from date: Foundation.Date, calendar: Foundation.Calendar = Calendar.current) -> Swift.Int
+  public func offsetDescription(from date: Foundation.Date, calendar: Foundation.Calendar = Calendar.current) -> Swift.String
+}
+@_hasMissingDesignatedInitializers final public class FarpointeSdk : FarpointeFramework.FarpointeSdkProviding, Foundation.ObservableObject {
+  public static var shared: any FarpointeFramework.FarpointeSdkProviding {
+    get
+  }
+  final public var accessCards: Combine.Published<[FarpointeFramework.FarpointeAccessCard]>.Publisher {
+    get
+  }
+  public typealias ObjectWillChangePublisher = Combine.ObservableObjectPublisher
+  @objc deinit
+}
+extension FarpointeFramework.FarpointeSdk {
+  public static func setup(configuration: FarpointeFramework.FarpointeConfiguration) -> Swift.Result<Swift.Void, FarpointeFramework.FarpointeError>
+  #if compiler(>=5.3) && $AsyncAwait
+  final public func registerDevice(email: Swift.String) async -> Swift.Result<Swift.Void, FarpointeFramework.FarpointeError>
+  #endif
+  #if compiler(>=5.3) && $AsyncAwait
+  final public func registerDevice(phoneNumber: Swift.String) async -> Swift.Result<Swift.Void, FarpointeFramework.FarpointeError>
+  #endif
+  #if compiler(>=5.3) && $AsyncAwait
+  final public func confirmDeviceRegistration(confirmationToken: Swift.String) async -> Swift.Result<Swift.Void, FarpointeFramework.FarpointeError>
+  #endif
+  final public func isDeviceRegistered() -> Swift.Bool
+  #if compiler(>=5.3) && $AsyncAwait
+  final public func unregisterDevice() async -> Swift.Result<Swift.Void, FarpointeFramework.FarpointeError>
+  #endif
+}
+extension FarpointeFramework.FarpointeSdk {
+  #if compiler(>=5.3) && $AsyncAwait
+  final public func registerAccessCard(registrationKey: Swift.String) async -> Swift.Result<Swift.Void, FarpointeFramework.FarpointeError>
+  #endif
+  #if compiler(>=5.3) && $AsyncAwait
+  final public func unregisterAccessCard(registrationKey: Swift.String) async -> Swift.Result<Swift.Void, FarpointeFramework.FarpointeError>
+  #endif
+  #if compiler(>=5.3) && $AsyncAwait
+  final public func activateAccessCard(registrationKey: Swift.String, timeout: FarpointeFramework.ActivationTime) async -> Swift.Result<Swift.Void, FarpointeFramework.FarpointeError>
+  #endif
+  final public func deactivateAccessCard(registrationKey: Swift.String) -> Swift.Result<Swift.Void, FarpointeFramework.FarpointeError>
+  final public func enableReaderDetection(for readerUuid: Foundation.UUID, delegate: (any FarpointeFramework.ReaderDetectorDelegate)?) -> Swift.Result<Swift.Void, FarpointeFramework.FarpointeError>
+  final public func disableReaderDetection(config: FarpointeFramework.DisableReaderConfiguration) -> Swift.Result<Swift.Void, FarpointeFramework.FarpointeError>
+}
+public func resolve<T>(_ keyPath: Swift.KeyPath<FarpointeFramework.Container, FarpointeFramework.Factory<T>>) -> T
+public func resolve<C, T>(_ keyPath: Swift.KeyPath<C, FarpointeFramework.Factory<T>>) -> T where C : FarpointeFramework.SharedContainer
+public enum DisableReaderConfiguration {
+  case all
+  case single(uuid: Foundation.UUID)
+}
+public protocol FactoryModifying {
+  associatedtype P
+  associatedtype T
+  var registration: FarpointeFramework.FactoryRegistration<Self.P, Self.T> { get set }
+}
+extension FarpointeFramework.FactoryModifying {
+  @discardableResult
+  public func scope(_ scope: FarpointeFramework.Scope) -> Self
+  public var cached: Self {
+    get
+  }
+  public var graph: Self {
+    get
+  }
+  public var shared: Self {
+    get
+  }
+  public var singleton: Self {
+    get
+  }
+  public var unique: Self {
+    get
+  }
+  @discardableResult
+  public func timeToLive(_ seconds: Foundation.TimeInterval) -> Self
+}
+extension FarpointeFramework.FactoryModifying {
+  @discardableResult
+  public func decorator(_ decorator: @escaping (_ instance: Self.T) -> Swift.Void) -> Self
+}
+extension FarpointeFramework.FactoryModifying {
+  @discardableResult
+  public func context(_ contexts: FarpointeFramework.FactoryContextType..., factory: @escaping (Self.P) -> Self.T) -> Self
+  @discardableResult
+  public func onArg(_ argument: Swift.String, factory: @escaping (Self.P) -> Self.T) -> Self
+  @discardableResult
+  public func onArgs(_ args: [Swift.String], factory: @escaping (Self.P) -> Self.T) -> Self
+  @discardableResult
+  public func onPreview(factory: @escaping (Self.P) -> Self.T) -> Self
+  @discardableResult
+  public func onTest(factory: @escaping (Self.P) -> Self.T) -> Self
+  @discardableResult
+  public func onDebug(factory: @escaping (Self.P) -> Self.T) -> Self
+  @discardableResult
+  public func onSimulator(factory: @escaping (Self.P) -> Self.T) -> Self
+  @discardableResult
+  public func onDevice(factory: @escaping (Self.P) -> Self.T) -> Self
+}
+extension FarpointeFramework.FactoryModifying {
+  @discardableResult
+  public func once() -> Self
+}
+extension FarpointeFramework.FactoryModifying {
+  public func reset(_ options: FarpointeFramework.FactoryResetOptions = .all)
+}
+@_hasMissingDesignatedInitializers public class Scope {
+  @objc deinit
+}
+extension FarpointeFramework.Scope {
+  public static let cached: FarpointeFramework.Scope.Cached
+  @_inheritsConvenienceInitializers final public class Cached : FarpointeFramework.Scope {
+    public init()
+    @objc deinit
+  }
+  public static let graph: FarpointeFramework.Scope.Graph
+  @_inheritsConvenienceInitializers final public class Graph : FarpointeFramework.Scope {
+    public init()
+    @objc deinit
+  }
+  public static let shared: FarpointeFramework.Scope.Shared
+  @_inheritsConvenienceInitializers final public class Shared : FarpointeFramework.Scope {
+    public init()
+    @objc deinit
+  }
+  public static let singleton: FarpointeFramework.Scope.Singleton
+  @_inheritsConvenienceInitializers final public class Singleton : FarpointeFramework.Scope {
+    public init()
+    final public func reset()
+    @objc deinit
+  }
+  public static let unique: FarpointeFramework.Scope.Unique
+  @_inheritsConvenienceInitializers final public class Unique : FarpointeFramework.Scope {
+    public init()
+    @objc deinit
+  }
+}
+extension Swift.Optional {
+  @inlinable internal var hasWrappedValue: Swift.Bool {
+    get {
+        wrappedValue != nil
+    }
+  }
+  @inlinable internal var wrappedValue: Any? {
+    get {
+        if case .some(let value) = self {
+            return value
+        }
+        return nil
+    }
+  }
+}
+public struct FactoryRegistration<P, T> {
+  public let type: Swift.String
+  public let id: Swift.String
+}
+public enum FactoryResetOptions {
+  case all
+  case none
+  case registration
+  case context
+  case scope
+  public static func == (a: FarpointeFramework.FactoryResetOptions, b: FarpointeFramework.FactoryResetOptions) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public protocol ReaderDetectorDelegate : AnyObject {
+  func readerDetector(onReaderNearby withBeacon: FarpointeFramework.Beacon)
+}
+extension FarpointeFramework.FarpointeErrorReason : Swift.Equatable {}
+extension FarpointeFramework.FarpointeErrorReason : Swift.Hashable {}
+extension FarpointeFramework.FarpointeErrorReason : Swift.RawRepresentable {}
+extension FarpointeFramework.ActivationTime : Swift.Equatable {}
+extension FarpointeFramework.ActivationTime : Swift.Hashable {}
+extension FarpointeFramework.ActivationTime : Swift.RawRepresentable {}
+extension FarpointeFramework.FactoryResetOptions : Swift.Equatable {}
+extension FarpointeFramework.FactoryResetOptions : Swift.Hashable {}

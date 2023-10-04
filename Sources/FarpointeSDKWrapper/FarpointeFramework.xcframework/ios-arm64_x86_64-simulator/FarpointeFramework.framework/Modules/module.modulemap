@@ -1,0 +1,11 @@
+framework module FarpointeFramework {
+  umbrella header "FarpointeFramework.h"
+
+  export *
+  module * { export * }
+}
+
+module FarpointeFramework.Swift {
+  header "FarpointeFramework-Swift.h"
+  requires objc
+}
